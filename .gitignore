@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Cache
+.cache/
+.turbo/
+.parcel-cache/
+.eslintcache
+
+# IDEs
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+
+# Testing
+playwright-report/
+test-results/
+
+# Storybook
+storybook-static/
+
+# Package Managers
+.pnpm-store/
+
+# Misc
+*.pem
+*.pid
+*.seed
+
+# Local data
+*.sqlite
+*.db
+
+# Generated files
+*.tgz

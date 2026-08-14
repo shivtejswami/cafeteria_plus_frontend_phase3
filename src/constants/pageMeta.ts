@@ -156,6 +156,9 @@ const STATIC_META: Record<string, PageMeta> = {
     title: 'Reports',
     subtitle: 'Survey insights, comments, and downloadable PDF reports',
   },
+  '/school/reports/survey-to-survey': {
+    title: 'Survey to survey comparison',
+  },
   '/school/reports/year-over-year': {
     title: 'Year-over-year comparison',
   },

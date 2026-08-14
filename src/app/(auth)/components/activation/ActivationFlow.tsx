@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { KeyboardEvent } from 'react';
@@ -36,6 +37,7 @@ import { EMPTY_LOGO_STATE, LogoUploader } from './LogoUploader';
 import type { LogoState } from './LogoUploader';
 import { TermsDocument, TermsSummary } from './TermsDocument';
 
+/** Terms & privacy closes the flow but carries no step badge of its own. */
 const STEP_ORDER: ActivationScreen[] = ['password', 'details', 'terms'];
 
 interface ActivationFlowProps {
@@ -85,6 +87,12 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
 
     return () => clearTimeout(timer);
   }, [token]);
+
+  // Steps swap in place rather than navigating, so the scroll container keeps the
+  // previous step's offset unless we send it back to the top.
+  useEffect(() => {
+    document.getElementById('auth-scroll')?.scrollTo({ top: 0 });
+  }, [screen]);
 
   const isSchool = activation?.role === 'school';
   const strength = checkPasswordStrength(password);
@@ -136,7 +144,6 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
 
     advance('terms', FAKE_LATENCY.saveDetails, () => {
       if (isSchool && logo.skipped) setLogoWasSkipped(true);
-      setTermsAccepted(false);
     });
   };
 
@@ -257,9 +264,8 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
     );
   }
 
-  const total = totalSteps(activation?.role);
-  const stepNumber = STEP_ORDER.indexOf(screen) + 1;
-  const currentStep = screen === 'terms' ? total : stepNumber;
+  const total = totalSteps();
+  const currentStep = STEP_ORDER.indexOf(screen) + 1;
   // const backButton = screen === 'password' ? null : (
   //   <button
   //     type="button"
@@ -390,19 +396,59 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
           readOnly
           tabIndex={-1}
           locked
-          hint="To change your email, contact SFWG."
+          hint="To change your email, contact internal team."
         />
 
-        <div className="rounded-xl bg-[#f5f6f8] border border-[#e8e6e1] p-3 mb-4 sm:mb-5">
-          <span className="text-[11px] sm:text-xs text-[#6d6d6d]">
-            {roleLabel(activation?.role)} at{' '}
-            <span className="font-medium text-[#2b2b2b]">{activation?.customerName}</span>
-          </span>
-        </div>
+        {isSchool && (
+          <div className="border-t border-[#e8e6e1] pt-4 mb-3">
+            <h2 className="text-[15px] font-semibold text-[#2b2b2b]">Your school logo</h2>
+            <p className="text-[13px] leading-relaxed mt-1 text-[#6d6d6d]">
+              Your logo appears on the right side of your school&apos;s report header, and in the PDFs you download.
+            </p>
+          </div>
+        )}
 
-        {isSchool && <LogoUploader state={logo} onChange={setLogo} />}
+        {isSchool && <LogoUploader state={logo} onChange={setLogo} hideSkip />}
+
+        <label className="flex items-start gap-3 cursor-pointer mb-4">
+          <input
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(event) => setTermsAccepted(event.target.checked)}
+            className="w-4 h-4 rounded accent-[#6d28d9] cursor-pointer mt-0.5 flex-shrink-0"
+          />
+          <span className="text-[13px] leading-snug text-[#2b2b2b]">
+            I&apos;ve read and accept the{' '}
+            <Link
+              href={AUTH_ROUTES.platformTerms}
+              className="text-[#6d28d9] underline-offset-2 hover:underline rounded focus:outline-none focus-visible:underline"
+              onClick={(event) => event.stopPropagation()}
+            >
+              platform terms
+            </Link>{' '}
+            and{' '}
+            <Link
+              href={AUTH_ROUTES.privacyNotice}
+              className="text-[#6d28d9] underline-offset-2 hover:underline rounded focus:outline-none focus-visible:underline"
+              onClick={(event) => event.stopPropagation()}
+            >
+              privacy notice
+            </Link>
+            .
+          </span>
+        </label>
 
         {submitAlert}
+
+        {isSchool && !logo.uploaded && !logo.skipped && (
+          <Button
+            variant="quiet"
+            onClick={() => setLogo({ ...EMPTY_LOGO_STATE, skipped: true })}
+            className="mb-3"
+          >
+            Skip for now
+          </Button>
+        )}
 
         <Button
           onClick={handleDetailsStep}
@@ -418,9 +464,6 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
 
   return (
     <>
-      <StepBadge current={currentStep} total={total} />
-      {/* {backButton} */}
-
       <PageHeading title="Terms and privacy">
         Please review these before you start using Cafeteria Pulse.
       </PageHeading>
@@ -429,20 +472,18 @@ export function ActivationFlow({ fallbackToken = DEFAULT_ACTIVATION_TOKEN }: Act
       <TermsDocument />
 
       <div className="flex flex-col gap-2 mb-4 sm:mb-5">
-        <a
-          href="#"
-          onClick={(event) => event.preventDefault()}
+        <Link
+          href={AUTH_ROUTES.platformTerms}
           className="text-xs font-medium text-[#6d28d9] transition-colors duration-150 hover:opacity-80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6d28d9] focus-visible:ring-offset-2"
         >
           View full platform terms →
-        </a>
-        <a
-          href="#"
-          onClick={(event) => event.preventDefault()}
+        </Link>
+        <Link
+          href={AUTH_ROUTES.privacyNotice}
           className="text-xs font-medium text-[#6d28d9] transition-colors duration-150 hover:opacity-80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6d28d9] focus-visible:ring-offset-2"
         >
           View full privacy notice →
-        </a>
+        </Link>
       </div>
 
       <label className="flex items-start gap-3 cursor-pointer mb-1">

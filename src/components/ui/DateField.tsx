@@ -49,9 +49,18 @@ export default function DateField({
   });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [panel, setPanel] = useState<HTMLDivElement | null>(null);
+  /**
+   * `position` starts at the viewport corner and is only correct once the panel
+   * has been measured. Staying hidden until then stops the first open from
+   * flashing in at the top-left and jumping to the field.
+   */
+  const [placed, setPlaced] = useState(false);
 
   useBrowserLayoutEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setPlaced(false);
+      return;
+    }
 
     function place() {
       const trigger = triggerRef.current;
@@ -82,6 +91,9 @@ export default function DateField({
         width,
         maxHeight: viewportH - GAP * 2,
       });
+
+      // Only reveal once the real panel height went into the placement above.
+      if (panel) setPlaced(true);
     }
 
     place();
@@ -89,12 +101,26 @@ export default function DateField({
     const observer = panel ? new ResizeObserver(place) : null;
     if (panel && observer) observer.observe(panel);
     window.addEventListener('resize', place);
-    window.addEventListener('scroll', place, true);
     return () => {
       observer?.disconnect();
       window.removeEventListener('resize', place);
-      window.removeEventListener('scroll', place, true);
     };
+  }, [open, panel]);
+
+  // The panel is portalled to the body, so it can't scroll with the modal behind
+  // it. Rather than let it drift away from its field, close it as soon as
+  // anything other than the calendar itself scrolls.
+  useEffect(() => {
+    if (!open) return;
+
+    function handleScroll(event: Event) {
+      const target = event.target as Node | null;
+      if (target && panel?.contains(target)) return;
+      setOpen(false);
+    }
+
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
   }, [open, panel]);
 
   useEffect(() => {
@@ -143,7 +169,7 @@ export default function DateField({
         createPortal(
           <div
             ref={setPanel}
-            className="fixed z-[90] overflow-y-auto overscroll-contain animate-in fade-in zoom-in-95 duration-100"
+            className={`fixed z-90 overflow-y-auto overscroll-contain transition-opacity duration-100 ${placed ? 'opacity-100' : 'opacity-0 invisible'}`}
             style={{
               top: position.top,
               left: position.left,

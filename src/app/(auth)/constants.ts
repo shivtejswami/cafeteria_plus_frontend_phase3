@@ -14,6 +14,8 @@ export const AUTH_ROUTES = {
   setPassword: '/set-password',
   activate: '/activate',
   accountInactive: '/account-inactive',
+  platformTerms: '/platform-terms',
+  privacyNotice: '/privacy-notice',
 } as const;
 
 export const PORTAL_ROUTES = {

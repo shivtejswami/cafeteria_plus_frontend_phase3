@@ -30,9 +30,11 @@ export const EMPTY_LOGO_STATE: LogoState = {
 interface LogoUploaderProps {
   state: LogoState;
   onChange: (state: LogoState) => void;
+  /** The activation step places "Skip for now" below the terms checkbox instead. */
+  hideSkip?: boolean;
 }
 
-export function LogoUploader({ state, onChange }: LogoUploaderProps) {
+export function LogoUploader({ state, onChange, hideSkip = false }: LogoUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
@@ -205,7 +207,7 @@ export function LogoUploader({ state, onChange }: LogoUploaderProps) {
         </div>
       )}
 
-      {!state.uploaded && !state.skipped && (
+      {!hideSkip && !state.uploaded && !state.skipped && (
         <Button variant="quiet" compact onClick={() => reset(true)} className="mt-3">
           Skip for now
         </Button>

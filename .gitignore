@@ -18,8 +18,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Environment Variables
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -39,7 +37,6 @@ next-env.d.ts
 .eslintcache
 
 # IDEs
-.vscode/
 .idea/
 
 # OS Files
@@ -70,3 +67,4 @@ storybook-static/
 
 # Generated files
 *.tgz
+config.bat

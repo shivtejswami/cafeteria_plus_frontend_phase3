@@ -3,8 +3,10 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import * as LucideIcons from "lucide-react";
 import { DASHBOARD_CONFIG } from "@/constants/navigation";
+import { SIDEBAR_GLYPHS } from "@/components/layout/SidebarIcons";
 import { NotificationBell } from "@/components/common/NotificationBell";
 import { resolvePageMeta } from "@/constants/pageMeta";
 import { UserDropdown } from "@/components/common/UserDropdown";
@@ -105,10 +107,17 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="fixed inset-0 bg-slate-900/50" onClick={() => setIsMobileMenuOpen(false)} />
-          <div className="relative w-64 bg-gradient-to-b from-[#2E115B] to-[#3C1677] h-full shadow-xl flex flex-col overflow-y-auto">
+          <div className="relative w-64 bg-linear-to-t from-[#2E115B] to-[#3C1677] h-full shadow-xl flex flex-col overflow-y-auto">
             <div className="h-16 flex items-center px-4 border-b border-[#3C1677] justify-between">
-              <span className="text-white font-bold">Cafeteria Plus</span>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="text-white/70 hover:text-white">
+              <Image
+                src="/sidebarlogo.svg"
+                alt="Cafeteria Plus Logo"
+                width={180}
+                height={40}
+                priority
+                className="object-contain"
+              />
+              <button onClick={() => setIsMobileMenuOpen(false)} className="text-white/70 hover:text-white shrink-0">
                 <LucideIcons.X className="w-5 h-5" />
               </button>
             </div>
@@ -119,18 +128,28 @@ export function Header() {
               <nav className="flex-1 space-y-1">
                 {config?.links.map((link) => {
                   const isActive = link.href === `/${dashboardType}` ? pathname === `/${dashboardType}` : pathname?.startsWith(link.href);
+                  const Glyph = SIDEBAR_GLYPHS[link.icon];
                   const Icon = (LucideIcons as any)[link.icon];
                   return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg cursor-pointer transition-colors ${isActive ? "bg-[#4D3382] text-white font-medium" : "text-slate-300 hover:bg-[#4D3382]/50"
-                        }`}
-                    >
-                      {Icon && <Icon className="w-4 h-4" strokeWidth={2.5} />}
-                      <span>{link.name}</span>
-                    </Link>
+                    <div key={link.name} className="relative">
+                      {isActive && (
+                        <div className="absolute -left-2 top-1/2 h-10 w-1 -translate-y-1/2 rounded-r-full bg-[#7C9A6D]" />
+                      )}
+
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-2 text-[15px] font-medium rounded-xl cursor-pointer transition-colors ${isActive ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/8 hover:text-white"
+                          }`}
+                      >
+                        {Glyph ? (
+                          <Glyph className="h-7 w-5 shrink-0" />
+                        ) : (
+                          Icon && <Icon className="w-5 h-5 shrink-0" strokeWidth={2} />
+                        )}
+                        <span>{link.name}</span>
+                      </Link>
+                    </div>
                   );
                 })}
               </nav>

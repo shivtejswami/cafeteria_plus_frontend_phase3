@@ -3,8 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import * as LucideIcons from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
 
+/** `href` is the district page each alert is about — see `dashboardHref` for other roles. */
 const MOCK_NOTIFICATIONS = [
   {
     id: 1,
@@ -14,6 +16,7 @@ const MOCK_NOTIFICATIONS = [
     time: "25m ago",
     unread: true,
     iconColor: "text-orange-500",
+    href: "/district/reopen-requests",
   },
   {
     id: 2,
@@ -23,6 +26,7 @@ const MOCK_NOTIFICATIONS = [
     time: "55m ago",
     unread: true,
     iconColor: "text-orange-500",
+    href: "/district/schools",
   },
   {
     id: 3,
@@ -32,6 +36,7 @@ const MOCK_NOTIFICATIONS = [
     time: "2h ago",
     unread: true,
     iconColor: "text-orange-500",
+    href: "/district/schools",
   },
   {
     id: 4,
@@ -41,6 +46,7 @@ const MOCK_NOTIFICATIONS = [
     time: "",
     unread: true,
     iconColor: "text-slate-400",
+    href: "/district/settings",
   },
   {
     id: 5,
@@ -50,12 +56,20 @@ const MOCK_NOTIFICATIONS = [
     time: "",
     unread: false,
     iconColor: "text-slate-400",
+    href: "/district/reports-analytics",
   },
 ];
 
 export function NotificationBell({ count = 5 }: { count?: number }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const dashboard = pathname?.split('/')[1] || 'district';
+
+  // The seed list is district-shaped. School and admin share this bell, so send
+  // them to their own notifications page rather than a district route.
+  const dashboardHref = (href: string) =>
+    dashboard === 'district' ? href : `/${dashboard}/notifications`;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -82,7 +96,13 @@ export function NotificationBell({ count = 5 }: { count?: number }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-[400px] sm:w-[400px] bg-white rounded-xl shadow-lg border border-[#E8E6E1] overflow-hidden z-50">
+        <>
+        {/* Mobile backdrop: dims the page and swallows touch scrolling behind the panel. */}
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/20 sm:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+        <div className="fixed top-[72px] left-3 right-3 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-[400px] bg-white rounded-xl shadow-lg border border-[#E8E6E1] overflow-hidden z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8E6E1]">
             <h3 className="font-semibold text-[#111827]">Notifications</h3>
             <button className="text-sm text-[#5B2DA3] hover:underline font-medium cursor-pointer">Mark all read</button>
@@ -90,9 +110,11 @@ export function NotificationBell({ count = 5 }: { count?: number }) {
           
           <div className="max-h-[60dvh] sm:max-h-[400px] overflow-y-auto overscroll-contain">
             {MOCK_NOTIFICATIONS.map((notification) => (
-              <div 
-                key={notification.id} 
-                className="flex gap-3 p-4 border-b border-[#EFEDE8] hover:bg-slate-50 transition-colors cursor-pointer"
+              <Link
+                key={notification.id}
+                href={dashboardHref(notification.href)}
+                onClick={() => setIsOpen(false)}
+                className="flex gap-3 p-4 border-b border-divider hover:bg-slate-50 transition-colors cursor-pointer focus:outline-none focus-visible:bg-slate-50"
               >
                 <div className="mt-1">
                   <div className={cn("w-2 h-2 rounded-full ring-2 ring-current", notification.iconColor)} />
@@ -123,13 +145,13 @@ export function NotificationBell({ count = 5 }: { count?: number }) {
                     )}
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
-          
+
           <div className="p-3 bg-white text-center border-t border-[#E8E6E1]">
-            <Link 
-              href={`/${typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'district'}/notifications`} 
+            <Link
+              href={`/${dashboard}/notifications`}
               className="text-sm font-medium text-[#5B2DA3] hover:underline"
               onClick={() => setIsOpen(false)}
             >
@@ -137,6 +159,7 @@ export function NotificationBell({ count = 5 }: { count?: number }) {
             </Link>
           </div>
         </div>
+        </>
       )}
     </div>
   );

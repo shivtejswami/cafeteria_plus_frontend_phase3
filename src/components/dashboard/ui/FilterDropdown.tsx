@@ -19,6 +19,9 @@ interface FilterDropdownProps {
   activeText?: string;
 }
 
+/** Widest the menu can get — kept in sync with the min-w/max-w on the panel below. */
+const MENU_WIDTH = 280;
+
 export default function FilterDropdown({
   label,
   value,
@@ -30,6 +33,9 @@ export default function FilterDropdown({
   activeText = 'text-iris',
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
+  // Pills sit in a two-column grid on mobile, so a left-anchored menu on the
+  // right-hand pill runs off screen. Flip it when there isn't room.
+  const [alignRight, setAlignRight] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
   const isActive = defaultValue !== undefined
@@ -53,10 +59,18 @@ export default function FilterDropdown({
 
   const displayValue = selected?.label || value;
 
+  const handleToggle = useCallback(() => {
+    if (!open && ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setAlignRight(rect.left + MENU_WIDTH > window.innerWidth - 8);
+    }
+    setOpen((current) => !current);
+  }, [open]);
+
   return (
     <div ref={ref} className="relative flex-shrink-0 min-w-0">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={handleToggle}
         className={`flex items-center justify-between gap-1.5 h-9 pl-3.5 pr-2.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6d28d9] focus-visible:ring-offset-1 w-full ${isActive ? 'bg-iris-50' : 'bg-surface'} ${isActive ? 'text-iris-800' : 'text-muted'} shadow-hairline border ${isActive ? activeBorder : 'border-line'}`}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -75,7 +89,7 @@ export default function FilterDropdown({
 
       {open && (
         <div
-          className="absolute left-0 top-full mt-1 bg-white rounded-xl py-1 z-40 overflow-hidden border border-line shadow-card min-w-[180px] max-w-[280px]"
+          className={`absolute top-full mt-1 bg-white rounded-xl py-1 z-40 overflow-hidden border border-line shadow-card min-w-45 max-w-70 ${alignRight ? 'right-0' : 'left-0'}`}
           role="listbox"
         >
           <div className="max-h-60 overflow-y-auto">

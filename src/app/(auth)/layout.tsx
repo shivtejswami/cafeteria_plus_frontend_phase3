@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   const year = new Date().getFullYear();
 
   return (
-    <div className="flex min-h-dvh font-sans text-[#2b2b2b]">
+    <div className="flex h-full min-h-0 font-sans text-[#2b2b2b]">
       <ShellPatternDefs />
 
       {/* Left panel — presentational, no focusable elements */}
@@ -39,7 +39,14 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Right panel — the active screen */}
-      <main className="flex-1 min-w-0 flex flex-col px-4 sm:px-6 py-8 sm:py-12 bg-[#faf9f6]">
+      {/*
+        Scrolls here rather than on the page: the root body is overflow-hidden.
+        The id lets multi-step screens reset it to the top when the step changes.
+      */}
+      <main
+        id="auth-scroll"
+        className="flex-1 min-w-0 flex flex-col overflow-y-auto px-4 sm:px-6 py-8 sm:py-12 bg-[#faf9f6]"
+      >
         {/* my-auto centres the column but still lets tall screens scroll to the top. */}
         <div className="my-auto w-full flex flex-col items-center">
           {/* Mobile & Tablet Logo */}

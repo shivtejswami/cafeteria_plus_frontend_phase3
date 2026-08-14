@@ -209,7 +209,9 @@ export default function NotificationCentre({
                           </span>
                         </div>
 
-                        <div className="ml-3 flex-1 min-w-0">
+                        {/* On mobile the CTA sits under the text instead of stealing width from it. */}
+                        <div className="ml-3 flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             {n.priority === 'action-required' && (
                               <span
@@ -253,7 +255,7 @@ export default function NotificationCentre({
                           </div>
                         </div>
 
-                        <div className="flex-shrink-0 ml-4 flex items-center gap-2 self-center">
+                        <div className="flex-shrink-0 flex items-center gap-2">
                           {n.ctaLabel && n.ctaHref && (
                             <Link
                               href={n.ctaHref}
@@ -266,7 +268,7 @@ export default function NotificationCentre({
                           {isUnreadRow ? (
                             <button
                               onClick={() => handleMarkRead(n.id)}
-                              className="opacity-0 group-hover:opacity-100 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:bg-iris-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-2"
+                              className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:bg-iris-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-2"
                               aria-label={`Mark "${n.title}" as read`}
                             >
                               <span className="w-4 h-4 flex items-center justify-center text-iris">
@@ -276,7 +278,7 @@ export default function NotificationCentre({
                           ) : (
                             <button
                               onClick={() => handleMarkUnread(n.id)}
-                              className="opacity-0 group-hover:opacity-100 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:bg-surface-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-2"
+                              className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150 hover:bg-surface-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-2"
                               aria-label={`Mark "${n.title}" as unread`}
                             >
                               <span className="w-4 h-4 flex items-center justify-center text-subtle">
@@ -284,6 +286,7 @@ export default function NotificationCentre({
                               </span>
                             </button>
                           )}
+                        </div>
                         </div>
                       </div>
                     </div>

@@ -29,9 +29,10 @@ export const DASHBOARD_CONFIG: Record<string, DashboardConfig> = {
   school: {
     title: "Hillside Middle", 
     links: [
-      { name: "Home", href: "/school", icon: "Home" },
-      { name: "Surveys", href: "/school/surveys", icon: "ClipboardList" },
-      { name: "Reports", href: "/school/reports", icon: "FileText" },
+      // *Glyph entries come from components/layout/SidebarIcons, not Lucide.
+      { name: "Home", href: "/school", icon: "HomeGlyph" },
+      { name: "Surveys", href: "/school/surveys", icon: "SurveyGlyph" },
+      { name: "Reports", href: "/school/reports", icon: "ReportsGlyph" },
       { name: "Activity", href: "/school/activity", icon: "History" },
       { name: "Help", href: "/school/help", icon: "Headset" },
     ],

@@ -48,7 +48,7 @@ interface StepBadgeProps {
 export function StepBadge({ current, total }: StepBadgeProps) {
   return (
     <div className="flex items-center gap-2 mb-4 sm:mb-5">
-      <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.08em] px-2.5 py-1 rounded-full bg-[#f0eafb] text-[#6d28d9]">
+      <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-full bg-[#f0eafb] text-[#6d28d9]">
         Step {current} of {total}
       </span>
     </div>

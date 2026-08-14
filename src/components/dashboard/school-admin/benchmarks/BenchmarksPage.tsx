@@ -345,13 +345,13 @@ export default function BenchmarksPage({ schoolData }: BenchmarksPageProps) {
           </span>
         </Link>
         <Link
-          href="/school/reports/year-over-year"
+          href="/school/reports/survey-to-survey"
           className="inline-flex w-full sm:w-auto justify-center sm:justify-start items-center gap-2 rounded-full h-9 px-4 font-medium whitespace-nowrap transition-colors duration-150 hover:bg-sage-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 bg-sage-50 border border-[#D6E0D2] text-sage-900"
         >
           <span className="w-4 h-4 flex items-center justify-center">
             <i className="ri-line-chart-line text-sm"></i>
           </span>
-          Year-over-year comparison
+          Survey to survey comparison
         </Link>
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastContext';
 import {
@@ -26,6 +26,88 @@ interface PreferenceState {
 }
 
 type DigestFrequency = 'immediate' | 'daily' | 'weekly';
+
+/**
+ * Field-width listbox for the digest frequency. A native `select` can't carry the
+ * tinted selected row the design calls for, so the menu is rendered in markup.
+ */
+function FrequencySelect({
+  value,
+  options,
+  onChange,
+}: {
+  value: DigestFrequency;
+  options: { value: DigestFrequency; label: string }[];
+  onChange: (value: DigestFrequency) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handlePointerDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  const selectedLabel = options.find((o) => o.value === value)?.label ?? '';
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-labelledby="email-frequency-label"
+        className="w-full h-11 pl-4 pr-3 rounded-xl text-[14px] flex items-center justify-between gap-2 text-left cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-1 bg-white border border-line text-ink"
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <span
+          className={`w-5 h-5 flex items-center justify-center shrink-0 transition-transform duration-150 text-subtle ${open ? 'rotate-180' : ''}`}
+        >
+          <i className="ri-arrow-down-s-line text-lg"></i>
+        </span>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-labelledby="email-frequency-label"
+          className="absolute left-0 right-0 top-full mt-1.5 rounded-xl overflow-hidden z-30 bg-white border border-line shadow-[0_8px_24px_rgba(0,0,0,0.10)]"
+        >
+          {options.map((option) => {
+            const isSelected = option.value === value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+                className={`w-full text-left px-4 py-2.5 text-[14px] cursor-pointer transition-colors duration-100 focus:outline-none focus-visible:bg-iris-50 ${isSelected ? 'bg-iris-50 text-iris font-medium' : 'bg-white text-ink hover:bg-surface-100'}`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function NotificationPreferencesPage({
   groups = schoolNotificationGroups,
@@ -160,24 +242,14 @@ export default function NotificationPreferencesPage({
           Email delivery
         </h2>
 
-        <label htmlFor="email-frequency" className="block text-[13px] font-medium mb-1.5 text-ink">
+        <span id="email-frequency-label" className="block text-[13px] font-medium mb-1.5 text-ink">
           Email frequency
-        </label>
-        <div className="relative">
-          <select
-            id="email-frequency"
-            value={digest}
-            onChange={(e) => { setDigest(e.target.value as DigestFrequency); setDirty(true); setSaved(false); }}
-            className="w-full h-11 pl-4 pr-10 rounded-xl text-[14px] appearance-none cursor-pointer transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-iris focus-visible:ring-offset-1 bg-white border border-line text-ink"
-          >
-            {frequencyOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-subtle">
-            <i className="ri-arrow-down-s-line text-lg"></i>
-          </span>
-        </div>
+        </span>
+        <FrequencySelect
+          value={digest}
+          options={frequencyOptions}
+          onChange={(next) => { setDigest(next); setDirty(true); setSaved(false); }}
+        />
 
         <p className="text-[12px] mt-2 text-subtle">
           Digests bundle non-urgent emails. Action-required and always-on alerts send immediately regardless.

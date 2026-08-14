@@ -13,7 +13,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Hillside Middle · 25m ago · Jul 23, 2026",
         isRead: false,
         actionLabel: "Review Request",
-        actionHref: "#",
+        actionHref: "/district/reopen-requests",
       },
       {
         id: "2",
@@ -23,7 +23,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Maple Elementary · 55m ago · Jul 23, 2026",
         isRead: false,
         actionLabel: "View Survey",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "3",
@@ -33,7 +33,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Northgate Middle · 2h ago · Jul 23, 2026",
         isRead: false,
         actionLabel: "View School",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "4",
@@ -43,7 +43,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Today · Jul 23, 2026",
         isRead: false,
         actionLabel: "View Subscription",
-        actionHref: "#",
+        actionHref: "/district/settings",
       }
     ]
   },
@@ -59,7 +59,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Yesterday · Jul 22, 2026",
         isRead: true,
         actionLabel: "View Benchmark",
-        actionHref: "#",
+        actionHref: "/district/reports-analytics",
       },
       {
         id: "6",
@@ -69,7 +69,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Yesterday · Jul 22, 2026",
         isRead: true,
         actionLabel: "My request",
-        actionHref: "#",
+        actionHref: "/district/help/my-requests",
       },
       {
         id: "7",
@@ -79,7 +79,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Cedar Grove Elementary · Yesterday · Jul 22, 2026",
         isRead: true,
         actionLabel: "View Survey",
-        actionHref: "#",
+        actionHref: "/district/schools/cedar-grove-elementary/surveys",
       }
     ]
   },
@@ -95,7 +95,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Westbrook High · 2 days ago · Jul 21, 2026",
         isRead: false,
         actionLabel: "Review Request",
-        actionHref: "#",
+        actionHref: "/district/reopen-requests",
       },
       {
         id: "9",
@@ -105,7 +105,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Parkview Middle · 3 days ago · Jul 20, 2026",
         isRead: true,
         actionLabel: "View Report",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "10",
@@ -115,7 +115,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Hillside Middle · 5 days ago · Jul 18, 2026",
         isRead: true,
         actionLabel: "View Survey",
-        actionHref: "#",
+        actionHref: "/district/schools/hillside-middle/surveys",
       },
       {
         id: "11",
@@ -125,7 +125,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Elm Street Elementary · 6 days ago · Jul 17, 2026",
         isRead: true,
         actionLabel: "View Survey",
-        actionHref: "#",
+        actionHref: "/district/reopen-requests",
       }
     ]
   },
@@ -141,7 +141,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Brighton Elementary · 1 week ago · Jul 16, 2026",
         isRead: true,
         actionLabel: "View School",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "13",
@@ -151,7 +151,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Maple Elementary · 1 week ago · Jul 13, 2026",
         isRead: true,
         actionLabel: "View Survey",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "14",
@@ -161,7 +161,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "1 week ago · Jul 10, 2026",
         isRead: true,
         actionLabel: "View Schools",
-        actionHref: "#",
+        actionHref: "/district/schools",
       },
       {
         id: "15",
@@ -171,7 +171,7 @@ export const NOTIFICATION_MOCK_DATA: NotificationGroup[] = [
         meta: "Westbrook High · 1 week ago · Jul 13, 2026",
         isRead: true,
         actionLabel: "View Request",
-        actionHref: "#",
+        actionHref: "/district/reopen-requests",
       }
     ]
   }

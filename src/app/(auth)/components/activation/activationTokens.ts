@@ -51,7 +51,7 @@ export function roleLabel(role: CustomerRole | undefined): string {
   return role ? ROLE_LABELS[role] : ROLE_LABELS.school;
 }
 
-/** Schools get an extra logo step, so their flow is one step longer. */
-export function totalSteps(role: CustomerRole | undefined): number {
-  return role === 'school' ? 3 : 2;
+/** Set a password, then confirm details — the logo and terms both live in step 2. */
+export function totalSteps(): number {
+  return 2;
 }

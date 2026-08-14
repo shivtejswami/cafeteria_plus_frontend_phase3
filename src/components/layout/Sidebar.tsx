@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { DASHBOARD_CONFIG } from "@/constants/navigation";
+import { SIDEBAR_GLYPHS } from "@/components/layout/SidebarIcons";
 import * as LucideIcons from "lucide-react";
 
 export function Sidebar() {
@@ -19,7 +20,8 @@ export function Sidebar() {
   const config = DASHBOARD_CONFIG[dashboardType];
 
   return (
-    <aside className="h-full w-64 bg-gradient-to-b from-[#2E115B] to-[#3C1677] text-slate-200 flex flex-col hidden md:flex border-r border-[#3C1677]">
+    // linear-gradient(0deg, #2E115B, #3C1677) — the darker stop sits at the bottom.
+    <aside className="h-full w-64 bg-linear-to-t from-[#2E115B] to-[#3C1677] text-slate-200 flex-col hidden md:flex border-r border-[#3C1677]">
       <div className="h-16 flex items-center px-4 border-b border-[#3C1677]">
         <Image src="/sidebarlogo.svg" alt="Cafeteria Plus Logo" width={180} height={40} priority className="object-contain" />
       </div>
@@ -34,6 +36,7 @@ export function Sidebar() {
                 ? pathname === `/${dashboardType}`
                 : pathname?.startsWith(link.href);
 
+            const Glyph = SIDEBAR_GLYPHS[link.icon];
             const Icon = (LucideIcons as any)[link.icon];
 
             return (
@@ -44,12 +47,16 @@ export function Sidebar() {
 
                 <Link
                   href={link.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${isActive
-                    ? "bg-[#4D3382] text-white font-medium"
-                    : "text-slate-300 hover:bg-[#4D3382]/50"
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2 text-[15px] font-medium transition-colors ${isActive
+                    ? "bg-white/12 text-white"
+                    : "text-white/70 hover:bg-white/8 hover:text-white"
                     }`}
                 >
-                  {Icon && <Icon className="h-4 w-4" strokeWidth={2.5} />}
+                  {Glyph ? (
+                    <Glyph className="h-7 w-5 shrink-0" />
+                  ) : (
+                    Icon && <Icon className="h-5 w-5 shrink-0" strokeWidth={2} />
+                  )}
                   <span>{link.name}</span>
                 </Link>
               </div>

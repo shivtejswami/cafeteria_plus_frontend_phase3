@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { cn } from "@/utils/cn";
 import { AlertTriangle, Info, Check } from "lucide-react";
 import { NotificationItem } from "./types";
@@ -17,6 +18,9 @@ export const NotificationRow: React.FC<NotificationRowProps> = ({ item, onMarkRe
   const isActionRequired = item.type === "action_required";
   const isAttention = item.type === "attention";
   
+  // Items without their own target still open the full feed rather than dead-ending.
+  const targetHref = item.actionHref || "/district/notifications";
+
   let Icon = Info;
   let iconBg = "bg-slate-100";
   let iconColor = "text-slate-500";
@@ -49,7 +53,7 @@ export const NotificationRow: React.FC<NotificationRowProps> = ({ item, onMarkRe
   return (
     <div 
       className={cn(
-        "group flex items-start gap-4 p-5 hover:bg-slate-50 transition-colors relative",
+        "group flex items-start gap-4 p-5 hover:bg-slate-50 transition-colors relative cursor-pointer",
         !item.isRead ? "bg-[#F6F3FC]" : "bg-white"
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -70,8 +74,14 @@ export const NotificationRow: React.FC<NotificationRowProps> = ({ item, onMarkRe
       {/* Content */}
       <div className="flex-1 min-w-0">
         {badge}
+        {/* Stretched link: the whole row opens the page this notification is about. */}
         <h4 className={cn("text-sm font-semibold truncate", !item.isRead ? "text-ink" : "text-slate-700")}>
-          {item.title}
+          <Link
+            href={targetHref}
+            className="rounded after:absolute after:inset-0 focus:outline-none focus-visible:underline"
+          >
+            {item.title}
+          </Link>
         </h4>
         <p className="text-sm text-slate-500 mt-1 line-clamp-2 leading-relaxed">
           {item.description}
@@ -84,19 +94,19 @@ export const NotificationRow: React.FC<NotificationRowProps> = ({ item, onMarkRe
       {/* Actions */}
       <div className="flex items-center gap-4 shrink-0 self-center">
         {item.actionLabel && (
-          <a 
-            href={item.actionHref}
-            className="text-xs font-medium text-iris hover:underline"
+          <Link
+            href={targetHref}
+            className="relative z-10 text-xs font-medium text-iris hover:underline"
           >
             {item.actionLabel}
-          </a>
+          </Link>
         )}
-        
+
         {/* Checkmark action (mark as read) */}
         <button
           onClick={() => onMarkRead(item.id)}
           className={cn(
-            "flex items-center justify-center w-8 h-8 rounded-full transition-all",
+            "relative z-10 flex items-center justify-center w-8 h-8 rounded-full transition-all cursor-pointer",
             !item.isRead && isHovered 
               ? "bg-iris-50 text-iris opacity-100 visible" 
               : item.isRead 

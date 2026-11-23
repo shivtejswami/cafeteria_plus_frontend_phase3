@@ -67,4 +67,7 @@ storybook-static/
 
 # Generated files
 *.tgz
+
+# env files (secrets)
+!.env.example
 config.bat
